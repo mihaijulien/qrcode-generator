@@ -74,7 +74,7 @@ function SimpleQRCodeGenerator() {
                 </div>
               </div>
 
-              <div className="flex sm:flex-row flex-col w-full grap-3 mb-2">
+              <div className="flex sm:flex-row flex-col w-full gap-3 mb-2">
                 <button onClick={handleDownload} disabled={!inputText.trim()}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-2
                 bg-blue-500 text-white rounded-lg hover:bg-blue-600
