@@ -1,10 +1,41 @@
 import { useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
+import { FiDownload, FiCopy, FiCheck, FiX } from 'react-icons/fi';
 import { BsQrCode } from 'react-icons/bs';
 
 function SimpleQRCodeGenerator() {
 
   const [ inputText, setInputText ] = useState("");
+  const [ copied, setCopied ] = useState(false);
+
+  const handleDownload = () => {
+    const canvas = document.querySelector("canvas");
+    if(!canvas) {
+      return;
+    }
+
+    const pngUrl = canvas.toDataURL("image/png").
+      replace("image/png", "image/octet-stream");
+
+    const link = document.createElement("a");
+    link.href = pngUrl;
+    link.download = "qr-code-png";
+    link.click();
+  }
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(inputText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch(err) {
+      console.error("Copy failed ", err);
+    }
+  }
+
+  const handleClear = () => {
+    setInputText("");
+  }
 
   return (
       <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-rose-400 to-indigo-400">
@@ -41,6 +72,43 @@ function SimpleQRCodeGenerator() {
                     )
                   }
                 </div>
+              </div>
+
+              <div className="flex sm:flex-row flex-col w-full grap-3 mb-2">
+                <button onClick={handleDownload} disabled={!inputText.trim()}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2
+                bg-blue-500 text-white rounded-lg hover:bg-blue-600
+                disabled:bg-gray-200 disabled:text-gray-400
+                disabled:cursor-not-allowed transition cursor-pointer">
+                  <FiDownload className="w-4 h-4" />Download
+                </button>
+
+                <button onClick={handleCopy} disabled={!inputText.trim()}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2
+                bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200
+                disabled:bg-gray-200 disabled:text-gray-400
+                disabled:cursor-not-allowed transition cursor-pointer">
+                  <FiDownload className="w-4 h-4" />
+                  {
+                    copied ? (
+                      <FiCheck className="w-4 h-4
+                      text-green-500" />
+                    ) : (
+                      <FiCopy className="w-4 h-4"/>
+                    )
+                  }
+                  {
+                    copied ? "Copied!" : "Copy"
+                  }
+                </button>
+
+                <button onClick={handleClear} disabled={!inputText.trim()}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2
+                bg-red-50 text-red-500 rounded-lg hover:bg-red-100
+                disabled:bg-gray-200 disabled:text-gray-400
+                disabled:cursor-not-allowed transition cursor-pointer">
+                  <FiX className="w-4 h-4" />Clear
+                </button>
               </div>
         </div>
       </div>
